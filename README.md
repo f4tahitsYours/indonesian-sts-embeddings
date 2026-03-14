@@ -1,7 +1,9 @@
-# Optimizing Indonesian Sentence Embeddings for Semantic Textual Similarity  
+<div align="center">
+
+# Optimizing Indonesian Sentence Embeddings for Semantic Textual Similarity
 ### A Contrastive Fine-Tuning Study with Hard Negative Mining
 
-<div align="center">
+<br>
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.x-orange?logo=pytorch)
@@ -9,11 +11,11 @@
 ![IndoBERT](https://img.shields.io/badge/Base%20Model-IndoBERT-purple)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
+<br>
+
 **A systematic empirical study on improving Indonesian sentence embeddings using contrastive learning and hard negative mining for Semantic Textual Similarity (STS) tasks.**
 
-</div>
-
-<p align="center">
+<br>
 
 [Project Overview](#1-project-overview) •  
 [Repository Structure](#2-repository-structure) •  
@@ -24,7 +26,7 @@
 [Usage](#9-example-usage) •  
 [Installation](#11-installation)
 
-</p>
+</div>
 
 ---
 
