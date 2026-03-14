@@ -1,0 +1,28 @@
+{
+  "n_triplets": 2968,
+  "n_anchor_pairs": 2970,
+  "coverage_pct": 99.93,
+  "anchor_threshold": 0.6,
+  "hard_neg_threshold": 0.4,
+  "n_candidates": 10,
+  "min_bm25_score": 0.5,
+  "corpus_size": 12986,
+  "anchor_pos_score": {
+    "mean": 0.7783,
+    "min": 0.6,
+    "max": 1.0
+  },
+  "bm25_score": {
+    "mean": 19.7724,
+    "min": 6.5715,
+    "max": 73.2176
+  },
+  "filter_stats": {
+    "self": 2964,
+    "is_positive": 2085,
+    "found": 2968,
+    "too_similar": 124,
+    "low_bm25": 57,
+    "no_hard_neg": 2
+  }
+}

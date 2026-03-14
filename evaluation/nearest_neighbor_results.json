@@ -1,0 +1,229 @@
+{
+  "queries": [
+    "Seorang pria sedang bermain gitar.",
+    "Harga bahan bakar naik secara signifikan.",
+    "Anak-anak bermain di taman bermain.",
+    "Dokter memberikan resep obat kepada pasien.",
+    "Tim sepak bola memenangkan pertandingan."
+  ],
+  "corpus_size": 500,
+  "top_k": 3,
+  "results": {
+    "Baseline": [
+      [
+        {
+          "sentence": "Seorang pria bermain gitar.",
+          "score": 0.9365
+        },
+        {
+          "sentence": "Seorang pria bermain gitar.",
+          "score": 0.9365
+        },
+        {
+          "sentence": "Seorang pria bermain gitar.",
+          "score": 0.9365
+        }
+      ],
+      [
+        {
+          "sentence": "Bendera bergerak di udara.",
+          "score": 0.6164
+        },
+        {
+          "sentence": "Sebuah pesawat naik di jalan.",
+          "score": 0.6127
+        },
+        {
+          "sentence": "Sebuah kereta hitam bergerak menuruni rel.",
+          "score": 0.6067
+        }
+      ],
+      [
+        {
+          "sentence": "Anak-anak bermain bola di taman.",
+          "score": 0.9517
+        },
+        {
+          "sentence": "Seorang anak bermain piano.",
+          "score": 0.8298
+        },
+        {
+          "sentence": "Anak-anak menari di atas panggung.",
+          "score": 0.8245
+        }
+      ],
+      [
+        {
+          "sentence": "Seorang bayi makan makanannya.",
+          "score": 0.6777
+        },
+        {
+          "sentence": "Seseorang memotong ramuan.",
+          "score": 0.6636
+        },
+        {
+          "sentence": "Seorang wanita sedang memberi makan bayi.",
+          "score": 0.6595
+        }
+      ],
+      [
+        {
+          "sentence": "Seorang pria bermain sepak bola.",
+          "score": 0.726
+        },
+        {
+          "sentence": "Klub harimau bermain bola.",
+          "score": 0.6967
+        },
+        {
+          "sentence": "Orang-orang bermain kriket.",
+          "score": 0.6907
+        }
+      ]
+    ],
+    "SimCSE": [
+      [
+        {
+          "sentence": "Seorang pria bermain gitar.",
+          "score": 0.8389
+        },
+        {
+          "sentence": "Seorang pria bermain gitar.",
+          "score": 0.8389
+        },
+        {
+          "sentence": "Seorang pria bermain gitar.",
+          "score": 0.8389
+        }
+      ],
+      [
+        {
+          "sentence": "Seorang pria naik sepeda.",
+          "score": 0.3494
+        },
+        {
+          "sentence": "Sebuah pesawat naik di jalan.",
+          "score": 0.3194
+        },
+        {
+          "sentence": "Pesawat putih di landasan pacu.",
+          "score": 0.29
+        }
+      ],
+      [
+        {
+          "sentence": "Anak-anak bermain bola di taman.",
+          "score": 0.9034
+        },
+        {
+          "sentence": "Anak-anak bermain trampolin di salju.",
+          "score": 0.566
+        },
+        {
+          "sentence": "Anak-anak menari di atas panggung.",
+          "score": 0.5531
+        }
+      ],
+      [
+        {
+          "sentence": "Seseorang memotong ramuan.",
+          "score": 0.46
+        },
+        {
+          "sentence": "Seorang wanita sedang memberi makan bayi.",
+          "score": 0.3399
+        },
+        {
+          "sentence": "Seorang wanita memotong beberapa tanaman herbal.",
+          "score": 0.3361
+        }
+      ],
+      [
+        {
+          "sentence": "Seorang pria bermain sepak bola.",
+          "score": 0.4977
+        },
+        {
+          "sentence": "Klub harimau bermain bola.",
+          "score": 0.4288
+        },
+        {
+          "sentence": "Seorang pria bermain basket.",
+          "score": 0.4261
+        }
+      ]
+    ],
+    "SBERT": [
+      [
+        {
+          "sentence": "Seorang pria bermain gitar.",
+          "score": 0.9624
+        },
+        {
+          "sentence": "Seorang pria bermain gitar.",
+          "score": 0.9624
+        },
+        {
+          "sentence": "Seorang pria bermain gitar.",
+          "score": 0.9624
+        }
+      ],
+      [
+        {
+          "sentence": "Kereta menuruni rel.",
+          "score": 0.4806
+        },
+        {
+          "sentence": "Sebuah kereta hitam bergerak menuruni rel.",
+          "score": 0.4501
+        },
+        {
+          "sentence": "Seorang pria di sepeda motor melakukan wheelie.",
+          "score": 0.4449
+        }
+      ],
+      [
+        {
+          "sentence": "Anak-anak bermain bola di taman.",
+          "score": 0.8325
+        },
+        {
+          "sentence": "Seorang anak sedang bermain game komputer.",
+          "score": 0.6125
+        },
+        {
+          "sentence": "Anak-anak bermain trampolin di salju.",
+          "score": 0.5806
+        }
+      ],
+      [
+        {
+          "sentence": "Seseorang memotong ramuan.",
+          "score": 0.4456
+        },
+        {
+          "sentence": "Seorang wanita memotong beberapa tanaman herbal.",
+          "score": 0.3794
+        },
+        {
+          "sentence": "Seorang wanita sedang memberi makan bayi.",
+          "score": 0.36
+        }
+      ],
+      [
+        {
+          "sentence": "Seorang pria bermain sepak bola.",
+          "score": 0.5337
+        },
+        {
+          "sentence": "Seorang pria bermain basket.",
+          "score": 0.369
+        },
+        {
+          "sentence": "Klub harimau bermain bola.",
+          "score": 0.3467
+        }
+      ]
+    ]
+  }
+}

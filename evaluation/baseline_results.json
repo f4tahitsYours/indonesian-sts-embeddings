@@ -1,0 +1,52 @@
+{
+  "model_name": "baseline_zero_shot",
+  "base_model": "indobenchmark/indobert-base-p1",
+  "fine_tuned": false,
+  "pooling": "mean",
+  "timestamp": "2026-03-13T16:22:32.338485",
+  "val": {
+    "pearson": 0.5594,
+    "spearman": 0.5625,
+    "n_pairs": 2994,
+    "by_category": {
+      "Low (0-2)": {
+        "n": 1196,
+        "spearman": 0.2998,
+        "pearson": 0.3018
+      },
+      "Mid (2-4)": {
+        "n": 1274,
+        "spearman": 0.2081,
+        "pearson": 0.217
+      },
+      "High (4-5)": {
+        "n": 524,
+        "spearman": 0.2595,
+        "pearson": 0.2481
+      }
+    }
+  },
+  "test": {
+    "pearson": 0.4597,
+    "spearman": 0.4653,
+    "n_pairs": 1372,
+    "by_category": {
+      "Low (0-2)": {
+        "n": 439,
+        "spearman": 0.3848,
+        "pearson": 0.3621
+      },
+      "Mid (2-4)": {
+        "n": 599,
+        "spearman": 0.1733,
+        "pearson": 0.1658
+      },
+      "High (4-5)": {
+        "n": 334,
+        "spearman": 0.2367,
+        "pearson": 0.2064
+      }
+    }
+  },
+  "model_path": "/content/drive/MyDrive/AI-Projects/sts-indonesian-embeddings/models/baseline"
+}

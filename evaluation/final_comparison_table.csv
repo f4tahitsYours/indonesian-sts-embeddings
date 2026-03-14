@@ -1,0 +1,4 @@
+model,strategy,val_spearman,test_spearman,test_pearson,delta_vs_baseline
+Zero-Shot Baseline,No fine-tuning,0.5625,0.4653,0.4597,0.0
+SimCSE,Unsupervised contrastive,0.6783,0.5885,0.5929,0.1232
+SBERT + Hard Neg,Supervised + hard negatives,0.7688,0.7091,0.7225,0.2438

@@ -1,0 +1,54 @@
+{
+  "project": "Indonesian STS Embeddings",
+  "base_model": "indobenchmark/indobert-base-p1",
+  "score_scale": "0-1 (normalized from 0-5)",
+  "n_simcse_sentences": 10373,
+  "n_mining_corpus": 12986,
+  "splits": {
+    "train": {
+      "n_pairs": 5696,
+      "score_mean": 0.5399,
+      "score_std": 0.293,
+      "score_min": 0.0,
+      "score_max": 1.0,
+      "n_low": 1756,
+      "n_mid": 2549,
+      "n_high": 1391,
+      "avg_len_s1": 62.9,
+      "avg_len_s2": 62.6,
+      "sources": {
+        "stsb_id_translated": 5696
+      }
+    },
+    "val": {
+      "n_pairs": 2994,
+      "score_mean": 0.4721,
+      "score_std": 0.2998,
+      "score_min": 0.0,
+      "score_max": 1.0,
+      "n_low": 1196,
+      "n_mid": 1274,
+      "n_high": 524,
+      "avg_len_s1": 69.0,
+      "avg_len_s2": 69.1,
+      "sources": {
+        "stsb_id_translated": 2994
+      }
+    },
+    "test": {
+      "n_pairs": 1372,
+      "score_mean": 0.5207,
+      "score_std": 0.3051,
+      "score_min": 0.0,
+      "score_max": 1.0,
+      "n_low": 439,
+      "n_mid": 599,
+      "n_high": 334,
+      "avg_len_s1": 58.8,
+      "avg_len_s2": 58.3,
+      "sources": {
+        "stsb_id_translated": 1372
+      }
+    }
+  }
+}
