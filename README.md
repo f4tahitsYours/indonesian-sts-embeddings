@@ -4,8 +4,15 @@
 ### A Contrastive Fine-Tuning Study with Hard Negative Mining
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)
-![PyTorch](https://img.shields.io/badge/PyTorch-2.x-orange?logo=pytorch)
-![sentence-transformers](https://img.shields.io/badge/sentence--transformers-5.x-green)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-orange?logo=pytorch)
+![sentence-transformers](https://img.shields.io/badge/sentence--transformers-5.0%2B-green)
+![Transformers](https://img.shields.io/badge/transformers-4.40%2B-yellow?logo=huggingface)
+![Gradio](https://img.shields.io/badge/Gradio-4.0%2B-orange?logo=gradio)
+![Datasets](https://img.shields.io/badge/datasets-2.19%2B-blue?logo=huggingface)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-1.3%2B-F7931E?logo=scikit-learn)
+![Pandas](https://img.shields.io/badge/pandas-2.0%2B-150458?logo=pandas)
+![NumPy](https://img.shields.io/badge/numpy-1.24%2B-013243?logo=numpy)
+![Matplotlib](https://img.shields.io/badge/matplotlib-3.7%2B-11557c)
 ![IndoBERT](https://img.shields.io/badge/Base%20Model-IndoBERT-purple)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
