@@ -34,6 +34,24 @@
 </div>
 
 ---
+## 🚀 Live Demo
+
+Coba model secara interaktif melalui aplikasi web yang telah di-deploy:
+
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://f4tahitsyours-indonesian-sts-embeddings-app.streamlit.app)
+
+**URL:** https://f4tahitsyours-indonesian-sts-embeddings-app.streamlit.app
+
+### Fitur Demo
+| Halaman | Deskripsi |
+|---------|-----------|
+| 🏠 Beranda | Overview project, metric cards, pipeline steps |
+| 📐 STS Score | Hitung similarity dua kalimat Bahasa Indonesia |
+| 🔎 Semantic Search | Cari kalimat relevan dari corpus berita Indonesia |
+| 📊 Hasil Evaluasi | Tabel perbandingan model, t-SNE, error analysis |
+| ℹ️ Tentang Model | Arsitektur, cara pakai, code example |
+---
+---
 
 ## 1. Project Overview
 
