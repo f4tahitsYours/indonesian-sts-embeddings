@@ -3,28 +3,26 @@
 # Optimizing Indonesian Sentence Embeddings for Semantic Textual Similarity
 ### A Contrastive Fine-Tuning Study with Hard Negative Mining
 
-<br>
-
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.x-orange?logo=pytorch)
 ![sentence-transformers](https://img.shields.io/badge/sentence--transformers-5.x-green)
 ![IndoBERT](https://img.shields.io/badge/Base%20Model-IndoBERT-purple)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
-<br>
-
 **A systematic empirical study on improving Indonesian sentence embeddings using contrastive learning and hard negative mining for Semantic Textual Similarity (STS) tasks.**
 
 <br>
 
-[Project Overview](#1-project-overview) •  
-[Repository Structure](#2-repository-structure) •  
-[Dataset](#3-dataset-description) •  
-[System Architecture](#4-system-architecture) •  
-[Training Pipeline](#5-model-training-pipeline) •  
-[Experiments](#7-experiments--results) •  
-[Usage](#9-example-usage) •  
-[Installation](#11-installation)
+<p align="center">
+<a href="#1-project-overview">Project Overview</a> •
+<a href="#2-repository-structure">Repository Structure</a> •
+<a href="#3-dataset-description">Dataset</a> •
+<a href="#4-system-architecture">System Architecture</a> •
+<a href="#5-model-training-pipeline">Training Pipeline</a> •
+<a href="#7-experiments--results">Experiments</a> •
+<a href="#9-example-usage">Usage</a> •
+<a href="#11-installation">Installation</a>
+</p>
 
 </div>
 
