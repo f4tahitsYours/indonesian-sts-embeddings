@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+venv/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Model weights (terlalu besar untuk GitHub)
+*.bin
+*.safetensors
+*.pt
+*.pth
+
+# HuggingFace cache
+hf_cache/
+
+# Dataset files besar
+*.npy
+datasets/translation_checkpoints/
+
+# Google Drive mount artifacts
+.goutputstream*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/secrets.toml
