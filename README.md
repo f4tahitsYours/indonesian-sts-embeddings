@@ -119,90 +119,110 @@ This module provides reusable utilities imported across all pipeline stages:
 
 ## 4. System Architecture
 
-### End-to-End ML Pipeline
+### 4.1 End-to-End ML Pipeline
 
 ```mermaid
 flowchart TD
-    A[English STSB Dataset\nstsb_multi_mt] -->|Helsinki-NLP/opus-mt-en-id| B[Machine Translation\nEN → ID]
-    B --> C[Dataset Preprocessing\nCleaning · Dedup · Split]
-    C --> D[(train_pairs.csv\n5696 pairs)]
-    C --> E[(val_pairs.csv\n2994 pairs)]
-    C --> F[(test_pairs.csv\n1372 pairs)]
+    A["English STSB Dataset\nstsb_multi_mt"]
+    -->|Helsinki-NLP/opus-mt-en-id| B["Machine Translation\nEN → ID"]
 
-    D --> G[Stage 3: Zero-Shot Baseline\nIndoBERT + Mean Pooling\nSpearman = 0.4653]
-    D --> H[Stage 4: SimCSE Training\nDropout Augmentation\nSpearman = 0.5885]
-    D --> I[Stage 5: BM25 Mining\n2968 Hard Negative Triplets]
-    I --> J[Stage 6: SBERT Fine-Tuning\nCosineSimilarityLoss\nSpearman = 0.7091]
+    B --> C["Dataset Preprocessing\nCleaning · Dedup · Split"]
 
-    G --> K[Stage 7: Final Evaluation]
+    C --> D[("train_pairs.csv\n5,696 pairs")]
+    C --> E[("val_pairs.csv\n2,994 pairs")]
+    C --> F[("test_pairs.csv\n1,372 pairs")]
+
+    D --> G["Stage 3 · Zero-Shot Baseline\nIndoBERT + Mean Pooling\nSpearman = 0.4653"]
+    D --> H["Stage 4 · SimCSE Training\nDropout Augmentation\nSpearman = 0.5885"]
+    D --> I["Stage 5 · BM25 Mining\n2,968 Hard Negative Triplets"]
+
+    I --> J["Stage 6 · SBERT Fine-Tuning\nCosineSimilarityLoss\nSpearman = 0.7091"]
+
+    G --> K["Stage 7 · Final Evaluation"]
     H --> K
     J --> K
-    K --> L[t-SNE · NN Analysis\nError Analysis · Report]
-    L --> M[Stage 8: Gradio Demo\nSemantic Search]
 
-    style G fill:#ffcccc
-    style H fill:#ffe0cc
-    style J fill:#ccffcc
-    style K fill:#cce0ff
+    K --> L["t-SNE · NN Analysis\nError Analysis · Report"]
+    L --> M["Stage 8 · Gradio Demo\nSemantic Search"]
+
+    style G fill:#FFEBE8,stroke:#CC4B37,color:#7A1F0D
+    style H fill:#FFF4E0,stroke:#CC8800,color:#7A4E00
+    style J fill:#E8F5E9,stroke:#2E7D32,color:#1B5E20
+    style K fill:#E3F0FF,stroke:#1565C0,color:#0D3060
 ```
 
-### Sentence Embedding Architecture
+---
+
+### 4.2 Sentence Embedding Architecture
 
 ```mermaid
 flowchart LR
-    subgraph Input
+    subgraph Input["Input"]
         S1[Sentence 1]
         S2[Sentence 2]
     end
 
-    subgraph Encoder["IndoBERT Encoder (shared weights)"]
-        T1[Tokenizer\nmax_len=128]
-        B1[BERT Layers\n12 × Transformer]
-        P1[Mean Pooling\nover token embeddings]
-        N1[L2 Normalization]
+    subgraph Encoder["IndoBERT Encoder — shared weights"]
+        T1["Tokenizer\nmax_len = 128"]
+        B1["BERT Layers\n12 × Transformer"]
+        P1["Mean Pooling\nover token embeddings"]
+        N1["L2 Normalization"]
     end
 
-    subgraph Output
-        E1[Embedding A\n768-dim]
-        E2[Embedding B\n768-dim]
-        CS[Cosine Similarity\n→ 0–1]
+    subgraph Output["Output"]
+        E1["Embedding A\n768-dim"]
+        E2["Embedding B\n768-dim"]
+        CS["Cosine Similarity\n→ score 0 – 1"]
     end
 
     S1 --> T1 --> B1 --> P1 --> N1 --> E1
-    S2 --> T1 --> B1 --> P1 --> N1 --> E2
+    S2 --> T1
     E1 --> CS
     E2 --> CS
 ```
 
-### Training Strategy Comparison
+---
+
+### 4.3 Training Strategy Comparison
+
+| | Stage 3 · Baseline | Stage 4 · SimCSE | Stage 6 · SBERT + HN |
+|---|---|---|---|
+| **Method** | Frozen weights, no loss | Dropout augmentation | Labeled pairs + hard negatives |
+| **Loss Function** | — | MultipleNegativesRankingLoss | CosineSimilarityLoss |
+| **Spearman ρ** | 0.4653 | 0.5885 | **0.7091** |
+| **Δ vs Baseline** | — | +0.1232 | **+0.2438** |
 
 ```mermaid
 flowchart LR
-    subgraph BL["Stage 3: Baseline"]
+    subgraph BL["Stage 3 · Baseline"]
         direction TB
-        b1[IndoBERT weights\nfrozen / untouched]
-        b2[No loss function]
-        b3[Spearman: 0.4653]
+        b1["IndoBERT weights frozen"]
+        b2["No loss function"]
+        b3["Spearman: 0.4653"]
         b1 --> b2 --> b3
     end
 
-    subgraph SC["Stage 4: SimCSE"]
+    subgraph SC["Stage 4 · SimCSE"]
         direction TB
-        s1[Same sentence × 2\nDifferent dropout masks]
-        s2[MultipleNegativesRankingLoss\nIn-batch negatives]
-        s3[Spearman: 0.5885\n+0.1232 vs baseline]
+        s1["Same sentence × 2 dropout masks"]
+        s2["MultipleNegativesRankingLoss"]
+        s3["Spearman: 0.5885 ↑ +0.1232"]
         s1 --> s2 --> s3
     end
 
-    subgraph SB["Stage 6: SBERT + HN"]
+    subgraph SB["Stage 6 · SBERT + HN"]
         direction TB
-        k1[Labeled pairs\n+ BM25 hard negatives]
-        k2[CosineSimilarityLoss\nPhase 1: 4 epochs]
-        k3[Spearman: 0.7091\n+0.2438 vs baseline]
+        k1["Labeled pairs + BM25 hard negatives"]
+        k2["CosineSimilarityLoss · 4 epochs"]
+        k3["Spearman: 0.7091 ↑ +0.2438"]
         k1 --> k2 --> k3
     end
 
     BL --> SC --> SB
+
+    style BL fill:#FFEBE8,stroke:#CC4B37,color:#7A1F0D
+    style SC fill:#FFF4E0,stroke:#CC8800,color:#7A4E00
+    style SB fill:#E8F5E9,stroke:#2E7D32,color:#1B5E20
 ```
 
 ---
