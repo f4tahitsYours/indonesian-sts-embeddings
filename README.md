@@ -125,47 +125,40 @@ This module provides reusable utilities imported across all pipeline stages:
 ```mermaid
 flowchart TD
     A([📦 English STS-B Dataset\nstsb_multi_mt])
-    B[🌐 Machine Translation\nHelsinki-NLP/opus-mt-en-id\nEN → ID]
-    C[🧹 Dataset Preprocessing\nCleaning · Deduplication · Splitting]
+    B["🌐 Machine Translation\nHelsinki-NLP/opus-mt-en-id\nEN → ID"]
+    C["🧹 Dataset Preprocessing\nCleaning · Deduplication · Splitting"]
 
     D[(🗂️ train_pairs.csv\n5,696 pairs)]
     E[(🗂️ val_pairs.csv\n2,994 pairs)]
     F[(🗂️ test_pairs.csv\n1,372 pairs)]
 
     G["⚡ Stage 3 — Zero-Shot Baseline\nIndoBERT + Mean Pooling\n📊 Spearman = 0.4653"]
-    H["🔁 Stage 4 — SimCSE Training\nDropout Augmentation\n📊 Spearman = 0.5885  (+0.1232)"]
+    H["🔁 Stage 4 — SimCSE Training\nDropout Augmentation\n📊 Spearman = 0.5885  ▲ +0.1232"]
     I["⛏️ Stage 5 — BM25 Hard Negative Mining\n2,968 Hard Negative Triplets"]
-    J["🎯 Stage 6 — SBERT Fine-Tuning\nCosineSimilarityLoss · 4 Epochs\n📊 Spearman = 0.7091  (+0.2438)"]
-
+    J["🎯 Stage 6 — SBERT Fine-Tuning\nCosineSimilarityLoss · 4 Epochs\n📊 Spearman = 0.7091  ▲ +0.2438"]
     K["📐 Stage 7 — Final Evaluation\nt-SNE · Nearest Neighbour · Error Analysis"]
     L["🖥️ Stage 8 — Gradio Demo\nSemantic Search Interface"]
 
-    A -->|Helsinki-NLP/opus-mt-en-id| B
+    A -->|"Helsinki-NLP/opus-mt-en-id"| B
     B --> C
     C --> D & E & F
-
-    D --> G
-    D --> H
-    D --> I
+    D --> G & H & I
     I --> J
-
-    G --> K
-    H --> K
-    J --> K
+    G & H & J --> K
     K --> L
 
-    style A fill:#1e293b,color:#f8fafc,stroke:#334155
-    style B fill:#0f172a,color:#7dd3fc,stroke:#0369a1
-    style C fill:#0f172a,color:#7dd3fc,stroke:#0369a1
-    style D fill:#172554,color:#bfdbfe,stroke:#1d4ed8
-    style E fill:#172554,color:#bfdbfe,stroke:#1d4ed8
-    style F fill:#172554,color:#bfdbfe,stroke:#1d4ed8
-    style G fill:#450a0a,color:#fca5a5,stroke:#b91c1c
-    style H fill:#431407,color:#fdba74,stroke:#c2410c
-    style I fill:#1c1917,color:#d6d3d1,stroke:#57534e
-    style J fill:#052e16,color:#86efac,stroke:#16a34a
-    style K fill:#1e3a5f,color:#93c5fd,stroke:#2563eb
-    style L fill:#2e1065,color:#c4b5fd,stroke:#7c3aed
+    style A fill:#1e293b,color:#f8fafc,stroke:#475569,stroke-width:2px
+    style B fill:#0f172a,color:#7dd3fc,stroke:#0369a1,stroke-width:2px
+    style C fill:#0f172a,color:#7dd3fc,stroke:#0369a1,stroke-width:2px
+    style D fill:#172554,color:#bfdbfe,stroke:#1d4ed8,stroke-width:2px
+    style E fill:#172554,color:#bfdbfe,stroke:#1d4ed8,stroke-width:2px
+    style F fill:#172554,color:#bfdbfe,stroke:#1d4ed8,stroke-width:2px
+    style G fill:#450a0a,color:#fca5a5,stroke:#b91c1c,stroke-width:2px
+    style H fill:#431407,color:#fdba74,stroke:#c2410c,stroke-width:2px
+    style I fill:#1c1917,color:#d6d3d1,stroke:#78716c,stroke-width:2px
+    style J fill:#052e16,color:#86efac,stroke:#16a34a,stroke-width:2px
+    style K fill:#1e3a5f,color:#93c5fd,stroke:#2563eb,stroke-width:2px
+    style L fill:#2e1065,color:#c4b5fd,stroke:#7c3aed,stroke-width:2px
 ```
 
 ---
@@ -178,7 +171,7 @@ flowchart LR
         S2["🔤 Sentence 2"]
     end
 
-    subgraph ENCODER["  🤖 IndoBERT Encoder  (shared weights)  "]
+    subgraph ENCODER["  🤖 IndoBERT Encoder  shared weights  "]
         T1["🔡 Tokenizer\nmax_len = 128"]
         B1["🔲 BERT Layers\n12 × Transformer Block"]
         P1["📊 Mean Pooling\nover token embeddings"]
@@ -188,18 +181,28 @@ flowchart LR
     subgraph OUTPUT["  📤 Output  "]
         E1["📦 Embedding A\n768-dim"]
         E2["📦 Embedding B\n768-dim"]
-        CS["🎯 Cosine Similarity\n→ score ∈ [0, 1]"]
+        CS["🎯 Cosine Similarity\nscore ∈ 0, 1"]
     end
 
-    S1 --> T1 --> B1 --> P1 --> N1 --> E1
+    S1 --> T1 --> B1 --> P1 --> N1 --> E1 --> CS
     S2 --> T1
-    E1 --> CS
-    E2 --> CS
-    N1 --> E2
+    N1 --> E2 --> CS
 
-    style INPUT fill:#0f172a,color:#e2e8f0,stroke:#334155
-    style ENCODER fill:#1e1b4b,color:#e0e7ff,stroke:#4338ca
-    style OUTPUT fill:#052e16,color:#dcfce7,stroke:#16a34a
+    style INPUT fill:#0f172a,color:#e2e8f0,stroke:#334155,stroke-width:2px
+    style ENCODER fill:#1e1b4b,color:#e0e7ff,stroke:#4338ca,stroke-width:2px
+    style OUTPUT fill:#052e16,color:#dcfce7,stroke:#16a34a,stroke-width:2px
+
+    style S1 fill:#1e293b,color:#cbd5e1,stroke:#475569
+    style S2 fill:#1e293b,color:#cbd5e1,stroke:#475569
+
+    style T1 fill:#312e81,color:#e0e7ff,stroke:#4338ca
+    style B1 fill:#312e81,color:#e0e7ff,stroke:#4338ca
+    style P1 fill:#312e81,color:#e0e7ff,stroke:#4338ca
+    style N1 fill:#312e81,color:#e0e7ff,stroke:#4338ca
+
+    style E1 fill:#14532d,color:#dcfce7,stroke:#16a34a
+    style E2 fill:#14532d,color:#dcfce7,stroke:#16a34a
+    style CS fill:#166534,color:#bbf7d0,stroke:#22c55e
 ```
 
 ---
@@ -208,15 +211,13 @@ flowchart LR
 ```mermaid
 flowchart LR
     subgraph BL["  ⚡ Stage 3 — Baseline  "]
-        direction TB
         b1["🔒 IndoBERT weights\nfrozen / untouched"]
         b2["❌ No loss function\nNo fine-tuning"]
-        b3["📊 Spearman: 0.4653\n(reference point)"]
+        b3["📊 Spearman: 0.4653\nreference point"]
         b1 --> b2 --> b3
     end
 
     subgraph SC["  🔁 Stage 4 — SimCSE  "]
-        direction TB
         s1["✏️ Same sentence × 2\nDifferent dropout masks"]
         s2["📉 MultipleNegativesRankingLoss\nIn-batch negatives"]
         s3["📊 Spearman: 0.5885\n▲ +0.1232 vs baseline"]
@@ -224,19 +225,30 @@ flowchart LR
     end
 
     subgraph SB["  🎯 Stage 6 — SBERT + Hard Negatives  "]
-        direction TB
         k1["📂 Labeled pairs\n+ BM25 hard negatives"]
         k2["📉 CosineSimilarityLoss\nPhase 1: 4 epochs"]
         k3["📊 Spearman: 0.7091\n▲ +0.2438 vs baseline"]
         k1 --> k2 --> k3
     end
 
-    BL -->|"+0.1232"| SC
-    SC -->|"+0.1206"| SB
+    BL -->|"▲ +0.1232"| SC
+    SC -->|"▲ +0.1206"| SB
 
-    style BL fill:#450a0a,color:#fecaca,stroke:#dc2626
-    style SC fill:#431407,color:#fed7aa,stroke:#ea580c
-    style SB fill:#052e16,color:#bbf7d0,stroke:#16a34a
+    style BL fill:#450a0a,color:#fecaca,stroke:#dc2626,stroke-width:2px
+    style SC fill:#431407,color:#fed7aa,stroke:#ea580c,stroke-width:2px
+    style SB fill:#052e16,color:#bbf7d0,stroke:#16a34a,stroke-width:2px
+
+    style b1 fill:#7f1d1d,color:#fee2e2,stroke:#b91c1c
+    style b2 fill:#7f1d1d,color:#fee2e2,stroke:#b91c1c
+    style b3 fill:#991b1b,color:#fecaca,stroke:#dc2626
+
+    style s1 fill:#7c2d12,color:#ffedd5,stroke:#c2410c
+    style s2 fill:#7c2d12,color:#ffedd5,stroke:#c2410c
+    style s3 fill:#92400e,color:#fde68a,stroke:#d97706
+
+    style k1 fill:#14532d,color:#dcfce7,stroke:#16a34a
+    style k2 fill:#14532d,color:#dcfce7,stroke:#16a34a
+    style k3 fill:#166534,color:#bbf7d0,stroke:#22c55e
 ```
 
 ---
