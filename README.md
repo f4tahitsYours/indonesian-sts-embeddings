@@ -1,30 +1,37 @@
-# Optimizing Indonesian Sentence Embeddings for Semantic Textual Similarity  
-### A Contrastive Fine-Tuning Study with Hard Negative Mining
-
 <div align="center">
 
+# Optimizing Indonesian Sentence Embeddings for Semantic Textual Similarity
+### A Contrastive Fine-Tuning Study with Hard Negative Mining
+
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)
-![PyTorch](https://img.shields.io/badge/PyTorch-2.x-orange?logo=pytorch)
-![sentence-transformers](https://img.shields.io/badge/sentence--transformers-5.x-green)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-orange?logo=pytorch)
+![sentence-transformers](https://img.shields.io/badge/sentence--transformers-5.0%2B-green)
+![Transformers](https://img.shields.io/badge/transformers-4.40%2B-yellow?logo=huggingface)
+![Gradio](https://img.shields.io/badge/Gradio-4.0%2B-orange?logo=gradio)
+![Datasets](https://img.shields.io/badge/datasets-2.19%2B-blue?logo=huggingface)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-1.3%2B-F7931E?logo=scikit-learn)
+![Pandas](https://img.shields.io/badge/pandas-2.0%2B-150458?logo=pandas)
+![NumPy](https://img.shields.io/badge/numpy-1.24%2B-013243?logo=numpy)
+![Matplotlib](https://img.shields.io/badge/matplotlib-3.7%2B-11557c)
 ![IndoBERT](https://img.shields.io/badge/Base%20Model-IndoBERT-purple)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
 **A systematic empirical study on improving Indonesian sentence embeddings using contrastive learning and hard negative mining for Semantic Textual Similarity (STS) tasks.**
 
-</div>
+<br>
 
 <p align="center">
-
-[Project Overview](#1-project-overview) •  
-[Repository Structure](#2-repository-structure) •  
-[Dataset](#3-dataset-description) •  
-[System Architecture](#4-system-architecture) •  
-[Training Pipeline](#5-model-training-pipeline) •  
-[Experiments](#7-experiments--results) •  
-[Usage](#9-example-usage) •  
-[Installation](#11-installation)
-
+<a href="#1-project-overview">Project Overview</a> •
+<a href="#2-repository-structure">Repository Structure</a> •
+<a href="#3-dataset-description">Dataset</a> •
+<a href="#4-system-architecture">System Architecture</a> •
+<a href="#5-model-training-pipeline">Training Pipeline</a> •
+<a href="#7-experiments--results">Experiments</a> •
+<a href="#9-example-usage">Usage</a> •
+<a href="#11-installation">Installation</a>
 </p>
+
+</div>
 
 ---
 
@@ -119,90 +126,136 @@ This module provides reusable utilities imported across all pipeline stages:
 
 ## 4. System Architecture
 
-### End-to-End ML Pipeline
+---
 
+### 🔄 End-to-End ML Pipeline
 ```mermaid
 flowchart TD
-    A[English STSB Dataset\nstsb_multi_mt] -->|Helsinki-NLP/opus-mt-en-id| B[Machine Translation\nEN → ID]
-    B --> C[Dataset Preprocessing\nCleaning · Dedup · Split]
-    C --> D[(train_pairs.csv\n5696 pairs)]
-    C --> E[(val_pairs.csv\n2994 pairs)]
-    C --> F[(test_pairs.csv\n1372 pairs)]
+    A([📦 English STS-B Dataset\nstsb_multi_mt])
+    B["🌐 Machine Translation\nHelsinki-NLP/opus-mt-en-id\nEN → ID"]
+    C["🧹 Dataset Preprocessing\nCleaning · Deduplication · Splitting"]
 
-    D --> G[Stage 3: Zero-Shot Baseline\nIndoBERT + Mean Pooling\nSpearman = 0.4653]
-    D --> H[Stage 4: SimCSE Training\nDropout Augmentation\nSpearman = 0.5885]
-    D --> I[Stage 5: BM25 Mining\n2968 Hard Negative Triplets]
-    I --> J[Stage 6: SBERT Fine-Tuning\nCosineSimilarityLoss\nSpearman = 0.7091]
+    D[(🗂️ train_pairs.csv\n5,696 pairs)]
+    E[(🗂️ val_pairs.csv\n2,994 pairs)]
+    F[(🗂️ test_pairs.csv\n1,372 pairs)]
 
-    G --> K[Stage 7: Final Evaluation]
-    H --> K
-    J --> K
-    K --> L[t-SNE · NN Analysis\nError Analysis · Report]
-    L --> M[Stage 8: Gradio Demo\nSemantic Search]
+    G["⚡ Stage 3 — Zero-Shot Baseline\nIndoBERT + Mean Pooling\n📊 Spearman = 0.4653"]
+    H["🔁 Stage 4 — SimCSE Training\nDropout Augmentation\n📊 Spearman = 0.5885  ▲ +0.1232"]
+    I["⛏️ Stage 5 — BM25 Hard Negative Mining\n2,968 Hard Negative Triplets"]
+    J["🎯 Stage 6 — SBERT Fine-Tuning\nCosineSimilarityLoss · 4 Epochs\n📊 Spearman = 0.7091  ▲ +0.2438"]
+    K["📐 Stage 7 — Final Evaluation\nt-SNE · Nearest Neighbour · Error Analysis"]
+    L["🖥️ Stage 8 — Gradio Demo\nSemantic Search Interface"]
 
-    style G fill:#ffcccc
-    style H fill:#ffe0cc
-    style J fill:#ccffcc
-    style K fill:#cce0ff
+    A -->|"Helsinki-NLP/opus-mt-en-id"| B
+    B --> C
+    C --> D & E & F
+    D --> G & H & I
+    I --> J
+    G & H & J --> K
+    K --> L
+
+    style A fill:#1e293b,color:#f8fafc,stroke:#475569,stroke-width:2px
+    style B fill:#0f172a,color:#7dd3fc,stroke:#0369a1,stroke-width:2px
+    style C fill:#0f172a,color:#7dd3fc,stroke:#0369a1,stroke-width:2px
+    style D fill:#172554,color:#bfdbfe,stroke:#1d4ed8,stroke-width:2px
+    style E fill:#172554,color:#bfdbfe,stroke:#1d4ed8,stroke-width:2px
+    style F fill:#172554,color:#bfdbfe,stroke:#1d4ed8,stroke-width:2px
+    style G fill:#450a0a,color:#fca5a5,stroke:#b91c1c,stroke-width:2px
+    style H fill:#431407,color:#fdba74,stroke:#c2410c,stroke-width:2px
+    style I fill:#1c1917,color:#d6d3d1,stroke:#78716c,stroke-width:2px
+    style J fill:#052e16,color:#86efac,stroke:#16a34a,stroke-width:2px
+    style K fill:#1e3a5f,color:#93c5fd,stroke:#2563eb,stroke-width:2px
+    style L fill:#2e1065,color:#c4b5fd,stroke:#7c3aed,stroke-width:2px
 ```
 
-### Sentence Embedding Architecture
+---
 
+### 🧠 Sentence Embedding Architecture
 ```mermaid
 flowchart LR
-    subgraph Input
-        S1[Sentence 1]
-        S2[Sentence 2]
+    subgraph INPUT["  📥 Input  "]
+        S1["🔤 Sentence 1"]
+        S2["🔤 Sentence 2"]
     end
 
-    subgraph Encoder["IndoBERT Encoder (shared weights)"]
-        T1[Tokenizer\nmax_len=128]
-        B1[BERT Layers\n12 × Transformer]
-        P1[Mean Pooling\nover token embeddings]
-        N1[L2 Normalization]
+    subgraph ENCODER["  🤖 IndoBERT Encoder  shared weights  "]
+        T1["🔡 Tokenizer\nmax_len = 128"]
+        B1["🔲 BERT Layers\n12 × Transformer Block"]
+        P1["📊 Mean Pooling\nover token embeddings"]
+        N1["📐 L2 Normalization"]
     end
 
-    subgraph Output
-        E1[Embedding A\n768-dim]
-        E2[Embedding B\n768-dim]
-        CS[Cosine Similarity\n→ 0–1]
+    subgraph OUTPUT["  📤 Output  "]
+        E1["📦 Embedding A\n768-dim"]
+        E2["📦 Embedding B\n768-dim"]
+        CS["🎯 Cosine Similarity\nscore ∈ 0, 1"]
     end
 
-    S1 --> T1 --> B1 --> P1 --> N1 --> E1
-    S2 --> T1 --> B1 --> P1 --> N1 --> E2
-    E1 --> CS
-    E2 --> CS
+    S1 --> T1 --> B1 --> P1 --> N1 --> E1 --> CS
+    S2 --> T1
+    N1 --> E2 --> CS
+
+    style INPUT fill:#0f172a,color:#e2e8f0,stroke:#334155,stroke-width:2px
+    style ENCODER fill:#1e1b4b,color:#e0e7ff,stroke:#4338ca,stroke-width:2px
+    style OUTPUT fill:#052e16,color:#dcfce7,stroke:#16a34a,stroke-width:2px
+
+    style S1 fill:#1e293b,color:#cbd5e1,stroke:#475569
+    style S2 fill:#1e293b,color:#cbd5e1,stroke:#475569
+
+    style T1 fill:#312e81,color:#e0e7ff,stroke:#4338ca
+    style B1 fill:#312e81,color:#e0e7ff,stroke:#4338ca
+    style P1 fill:#312e81,color:#e0e7ff,stroke:#4338ca
+    style N1 fill:#312e81,color:#e0e7ff,stroke:#4338ca
+
+    style E1 fill:#14532d,color:#dcfce7,stroke:#16a34a
+    style E2 fill:#14532d,color:#dcfce7,stroke:#16a34a
+    style CS fill:#166534,color:#bbf7d0,stroke:#22c55e
 ```
 
-### Training Strategy Comparison
+---
 
+### 📊 Training Strategy Comparison
 ```mermaid
 flowchart LR
-    subgraph BL["Stage 3: Baseline"]
-        direction TB
-        b1[IndoBERT weights\nfrozen / untouched]
-        b2[No loss function]
-        b3[Spearman: 0.4653]
+    subgraph BL["  ⚡ Stage 3 — Baseline  "]
+        b1["🔒 IndoBERT weights\nfrozen / untouched"]
+        b2["❌ No loss function\nNo fine-tuning"]
+        b3["📊 Spearman: 0.4653\nreference point"]
         b1 --> b2 --> b3
     end
 
-    subgraph SC["Stage 4: SimCSE"]
-        direction TB
-        s1[Same sentence × 2\nDifferent dropout masks]
-        s2[MultipleNegativesRankingLoss\nIn-batch negatives]
-        s3[Spearman: 0.5885\n+0.1232 vs baseline]
+    subgraph SC["  🔁 Stage 4 — SimCSE  "]
+        s1["✏️ Same sentence × 2\nDifferent dropout masks"]
+        s2["📉 MultipleNegativesRankingLoss\nIn-batch negatives"]
+        s3["📊 Spearman: 0.5885\n▲ +0.1232 vs baseline"]
         s1 --> s2 --> s3
     end
 
-    subgraph SB["Stage 6: SBERT + HN"]
-        direction TB
-        k1[Labeled pairs\n+ BM25 hard negatives]
-        k2[CosineSimilarityLoss\nPhase 1: 4 epochs]
-        k3[Spearman: 0.7091\n+0.2438 vs baseline]
+    subgraph SB["  🎯 Stage 6 — SBERT + Hard Negatives  "]
+        k1["📂 Labeled pairs\n+ BM25 hard negatives"]
+        k2["📉 CosineSimilarityLoss\nPhase 1: 4 epochs"]
+        k3["📊 Spearman: 0.7091\n▲ +0.2438 vs baseline"]
         k1 --> k2 --> k3
     end
 
-    BL --> SC --> SB
+    BL -->|"▲ +0.1232"| SC
+    SC -->|"▲ +0.1206"| SB
+
+    style BL fill:#450a0a,color:#fecaca,stroke:#dc2626,stroke-width:2px
+    style SC fill:#431407,color:#fed7aa,stroke:#ea580c,stroke-width:2px
+    style SB fill:#052e16,color:#bbf7d0,stroke:#16a34a,stroke-width:2px
+
+    style b1 fill:#7f1d1d,color:#fee2e2,stroke:#b91c1c
+    style b2 fill:#7f1d1d,color:#fee2e2,stroke:#b91c1c
+    style b3 fill:#991b1b,color:#fecaca,stroke:#dc2626
+
+    style s1 fill:#7c2d12,color:#ffedd5,stroke:#c2410c
+    style s2 fill:#7c2d12,color:#ffedd5,stroke:#c2410c
+    style s3 fill:#92400e,color:#fde68a,stroke:#d97706
+
+    style k1 fill:#14532d,color:#dcfce7,stroke:#16a34a
+    style k2 fill:#14532d,color:#dcfce7,stroke:#16a34a
+    style k3 fill:#166534,color:#bbf7d0,stroke:#22c55e
 ```
 
 ---
@@ -228,15 +281,45 @@ The dataset is derived from the **STS Benchmark (STSB)** — the standard Englis
 
 ### Preprocessing Pipeline
 
+### 🧹 Preprocessing Pipeline
 ```mermaid
 flowchart LR
-    A[Raw English STSB] -->|load_dataset stsb_multi_mt en| B[5749 / 1500 / 1379]
-    B -->|Helsinki-NLP MarianMT\ngreedy decode batch=128| C[Indonesian Translation]
-    C -->|unicodedata NFC| D[Unicode Normalize]
-    D -->|remove control chars\nnormalize whitespace| E[Text Cleaning]
-    E -->|min_len=5 max_len=512\nscore in 0–1| F[Quality Filter]
-    F -->|drop_duplicates per split| G[Deduplication]
-    G --> H[train / val / test CSV]
+    A([📦 Raw English STS-B\nstsb_multi_mt])
+
+    B["📊 Raw Split Sizes\ntrain: 5,749 · val: 1,500 · test: 1,379"]
+
+    C["🌐 Indonesian Translation\nHelsinki-NLP MarianMT\ngreedy decode · batch = 128"]
+
+    D["🔤 Unicode Normalization\nunicodedata NFC"]
+
+    E["🧽 Text Cleaning\nremove control chars\nnormalize whitespace"]
+
+    F["✅ Quality Filtering\nmin_len = 5 · max_len = 512\nscore ∈ [0, 1]"]
+
+    G["🔁 Deduplication\ndrop_duplicates per split"]
+
+    H1[(🗂️ train_pairs.csv\n5,696 pairs)]
+    H2[(🗂️ val_pairs.csv\n2,994 pairs)]
+    H3[(🗂️ test_pairs.csv\n1,372 pairs)]
+
+    A -->|load_dataset| B
+    B -->|MarianMT EN→ID| C
+    C -->|NFC| D
+    D -->|strip & clean| E
+    E -->|filter by len & score| F
+    F -->|per-split dedup| G
+    G --> H1 & H2 & H3
+
+    style A fill:#1e293b,color:#f8fafc,stroke:#334155
+    style B fill:#172554,color:#bfdbfe,stroke:#1d4ed8
+    style C fill:#0f172a,color:#7dd3fc,stroke:#0369a1
+    style D fill:#1e1b4b,color:#e0e7ff,stroke:#4338ca
+    style E fill:#1e1b4b,color:#e0e7ff,stroke:#4338ca
+    style F fill:#422006,color:#fde68a,stroke:#d97706
+    style G fill:#1c1917,color:#d6d3d1,stroke:#57534e
+    style H1 fill:#052e16,color:#86efac,stroke:#16a34a
+    style H2 fill:#052e16,color:#86efac,stroke:#16a34a
+    style H3 fill:#052e16,color:#86efac,stroke:#16a34a
 ```
 
 **Additional corpus files built in Stage 2:**
@@ -304,11 +387,44 @@ loss = MultipleNegativesRankingLoss(model, scale=20.0)
 
 ```mermaid
 flowchart LR
-    A[Training pairs\nscore ≥ 0.6\n→ 2970 anchors] -->|BM25 top-30\ncandidates per anchor| B[Candidate Pool]
-    B -->|Filter 1: BM25 score > 0.5| C[Lexically Similar]
-    C -->|Filter 2: candidate ≠ anchor\ncandidate ≠ positive| D[Not Self/Positive]
-    D -->|Filter 3: known score < 0.4\nor unknown| E[Semantically Dissimilar]
-    E -->|Take 1 per anchor| F[2968 Hard Negative Triplets\n99.9% coverage]
+    A([🗂️ Training Pairs\nscore ≥ 0.6\n→ 2,970 anchors])
+
+    B["🔍 BM25 Retrieval\ntop-30 candidates\nper anchor"]
+
+    C["📋 Candidate Pool\nraw retrieved docs"]
+
+    F1{"🔎 Filter 1\nBM25 score > 0.5\nlexically similar?"}
+
+    F2{"🚫 Filter 2\ncandidate ≠ anchor\ncandidate ≠ positive"}
+
+    F3{"📉 Filter 3\nknown score < 0.4\nor unknown pair"}
+
+    G["✅ Hard Negative Selected\n1 per anchor"]
+
+    OUT([🎯 2,968 Hard Negative Triplets\n⟨anchor, positive, hard_negative⟩\n99.9% coverage])
+
+    SKIP(["⏭️ Skip anchor\nno valid negative found"])
+
+    A -->|high-similarity pairs| B
+    B -->|retrieve candidates| C
+    C --> F1
+    F1 -->|✓ pass| F2
+    F1 -->|✗ fail| SKIP
+    F2 -->|✓ pass| F3
+    F2 -->|✗ fail| SKIP
+    F3 -->|✓ pass| G
+    F3 -->|✗ fail| SKIP
+    G --> OUT
+
+    style A fill:#1e293b,color:#f8fafc,stroke:#334155
+    style B fill:#0f172a,color:#7dd3fc,stroke:#0369a1
+    style C fill:#172554,color:#bfdbfe,stroke:#1d4ed8
+    style F1 fill:#422006,color:#fde68a,stroke:#d97706
+    style F2 fill:#422006,color:#fde68a,stroke:#d97706
+    style F3 fill:#422006,color:#fde68a,stroke:#d97706
+    style G fill:#052e16,color:#86efac,stroke:#16a34a
+    style OUT fill:#052e16,color:#bbf7d0,stroke:#16a34a
+    style SKIP fill:#1c1917,color:#a8a29e,stroke:#57534e
 ```
 
 **Example hard negative triplet:**
@@ -612,76 +728,116 @@ All notebooks are designed to run sequentially on Google Colab Free Tier (T4 GPU
 ---
 
 ## 12. Project Pipeline Diagram
-
 ```mermaid
 flowchart TD
-    subgraph Stage1["Stage 1 — Environment"]
-        A1[Install packages\nsentence-transformers\nrank-bm25 · gradio]
-        A2[Google Drive mount\nHuggingFace cache setup]
-        A3[GPU verification\nIndoBERT smoke test]
+    subgraph Stage1["⚙️ Stage 1 — Environment Setup"]
+        A1["📦 Install Packages\nsentence-transformers · rank-bm25 · gradio"]
+        A2["💾 Google Drive Mount\nHuggingFace cache setup"]
+        A3["🖥️ GPU Verification\nIndoBERT smoke test"]
         A1 --> A2 --> A3
     end
 
-    subgraph Stage2["Stage 2 — Dataset"]
-        B1[Download English STSB\nstsb_multi_mt en]
-        B2[Translate EN→ID\nHelsinki-NLP MarianMT]
-        B3[Clean · Filter · Dedup]
-        B4[Export CSVs\ntrain/val/test splits]
-        B5[Build corpora\nSimCSE + BM25]
+    subgraph Stage2["🗃️ Stage 2 — Dataset Construction"]
+        B1["📥 Download English STS-B\nstsb_multi_mt · en"]
+        B2["🌐 Translate EN → ID\nHelsinki-NLP MarianMT"]
+        B3["🧹 Clean · Filter · Dedup"]
+        B4["💾 Export CSVs\ntrain / val / test splits"]
+        B5["🔨 Build Corpora\nSimCSE + BM25 index"]
         B1 --> B2 --> B3 --> B4 --> B5
     end
 
-    subgraph Stage3["Stage 3 — Baseline"]
-        C1[IndoBERT + Mean Pool\nZero-shot]
-        C2[Encode val & test\nSave .npy]
-        C3[Spearman = 0.4653]
+    subgraph Stage3["⚡ Stage 3 — Zero-Shot Baseline"]
+        C1["🤖 IndoBERT + Mean Pooling\nzero-shot inference"]
+        C2["📐 Encode val & test\nsave embeddings .npy"]
+        C3["📊 Spearman = 0.4653\nreference point"]
         C1 --> C2 --> C3
     end
 
-    subgraph Stage4["Stage 4 — SimCSE"]
-        D1[Build InputExamples\nsent → sent same pair]
-        D2[MNR Loss training\n1 epoch · 163 steps]
-        D3[Spearman = 0.5885\n+0.1232 vs baseline]
+    subgraph Stage4["🔁 Stage 4 — SimCSE Training"]
+        D1["✏️ Build InputExamples\nsent → same sent pair"]
+        D2["📉 MNR Loss Training\n1 epoch · 163 steps"]
+        D3["📊 Spearman = 0.5885\n▲ +0.1232 vs baseline"]
         D1 --> D2 --> D3
     end
 
-    subgraph Stage5["Stage 5 — Hard Negatives"]
-        E1[Build BM25 index\n12986 sentences]
-        E2[Mine 2968 triplets\n99.9% coverage]
-        E3[Export triplets CSV]
+    subgraph Stage5["⛏️ Stage 5 — Hard Negative Mining"]
+        E1["🔍 Build BM25 Index\n12,986 sentences"]
+        E2["🎯 Mine 2,968 Triplets\n99.9% anchor coverage"]
+        E3["💾 Export triplets CSV\n⟨anchor · positive · hard_neg⟩"]
         E1 --> E2 --> E3
     end
 
-    subgraph Stage6["Stage 6 — SBERT"]
-        F1[Phase 1: CosineSimilarityLoss\n4 epochs · labeled pairs]
-        F2[Spearman = 0.7091\n+0.2438 vs baseline]
+    subgraph Stage6["🎯 Stage 6 — SBERT Fine-Tuning"]
+        F1["📉 CosineSimilarityLoss\nPhase 1: 4 epochs · labeled pairs\n+ BM25 hard negatives"]
+        F2["📊 Spearman = 0.7091\n▲ +0.2438 vs baseline"]
         F1 --> F2
     end
 
-    subgraph Stage7["Stage 7 — Evaluation"]
-        G1[Final comparison table]
-        G2[t-SNE visualization]
-        G3[Nearest neighbor analysis]
-        G4[Error analysis · MAE]
+    subgraph Stage7["📐 Stage 7 — Final Evaluation"]
+        G1["📋 Model Comparison Table\nBaseline · SimCSE · SBERT"]
+        G2["🗺️ t-SNE Visualization\nembedding space"]
+        G3["🔗 Nearest Neighbor Analysis"]
+        G4["🔬 Error Analysis · MAE"]
         G1 --> G2 --> G3 --> G4
     end
 
-    subgraph Stage8["Stage 8 — Deploy"]
-        H1[GitHub upload\nnotebooks · src · eval]
-        H2[Gradio demo\nSTS Score + Semantic Search]
+    subgraph Stage8["🚀 Stage 8 — Deployment"]
+        H1["📤 GitHub Upload\nnotebooks · src · eval · docs"]
+        H2["🖥️ Gradio Demo\nSTS Scoring + Semantic Search"]
         H1 --> H2
     end
 
-    Stage1 --> Stage2 --> Stage3
-    Stage2 --> Stage4
-    Stage2 --> Stage5
+    Stage1 --> Stage2
+    Stage2 --> Stage3 & Stage4 & Stage5
     Stage5 --> Stage6
-    Stage3 --> Stage7
-    Stage4 --> Stage7
-    Stage6 --> Stage7
-    Stage7 --> Stage8
-```
 
+    Stage3 -->|"Spearman: 0.4653"| Stage7
+    Stage4 -->|"Spearman: 0.5885"| Stage7
+    Stage6 -->|"Spearman: 0.7091"| Stage7
+    Stage7 --> Stage8
+
+    style Stage1 fill:#0f172a,color:#e2e8f0,stroke:#475569,stroke-width:2px
+    style Stage2 fill:#172554,color:#bfdbfe,stroke:#1d4ed8,stroke-width:2px
+    style Stage3 fill:#450a0a,color:#fecaca,stroke:#dc2626,stroke-width:2px
+    style Stage4 fill:#431407,color:#fed7aa,stroke:#ea580c,stroke-width:2px
+    style Stage5 fill:#1c1917,color:#d6d3d1,stroke:#78716c,stroke-width:2px
+    style Stage6 fill:#052e16,color:#86efac,stroke:#16a34a,stroke-width:2px
+    style Stage7 fill:#1e3a5f,color:#93c5fd,stroke:#2563eb,stroke-width:2px
+    style Stage8 fill:#2e1065,color:#c4b5fd,stroke:#7c3aed,stroke-width:2px
+
+    style A1 fill:#1e293b,color:#cbd5e1,stroke:#475569
+    style A2 fill:#1e293b,color:#cbd5e1,stroke:#475569
+    style A3 fill:#1e293b,color:#cbd5e1,stroke:#475569
+
+    style B1 fill:#1e3a8a,color:#dbeafe,stroke:#2563eb
+    style B2 fill:#1e3a8a,color:#dbeafe,stroke:#2563eb
+    style B3 fill:#1e3a8a,color:#dbeafe,stroke:#2563eb
+    style B4 fill:#1e3a8a,color:#dbeafe,stroke:#2563eb
+    style B5 fill:#1e3a8a,color:#dbeafe,stroke:#2563eb
+
+    style C1 fill:#7f1d1d,color:#fee2e2,stroke:#b91c1c
+    style C2 fill:#7f1d1d,color:#fee2e2,stroke:#b91c1c
+    style C3 fill:#991b1b,color:#fecaca,stroke:#dc2626
+
+    style D1 fill:#7c2d12,color:#ffedd5,stroke:#c2410c
+    style D2 fill:#7c2d12,color:#ffedd5,stroke:#c2410c
+    style D3 fill:#92400e,color:#fde68a,stroke:#d97706
+
+    style E1 fill:#292524,color:#e7e5e4,stroke:#78716c
+    style E2 fill:#292524,color:#e7e5e4,stroke:#78716c
+    style E3 fill:#292524,color:#e7e5e4,stroke:#78716c
+
+    style F1 fill:#14532d,color:#dcfce7,stroke:#16a34a
+    style F2 fill:#166534,color:#bbf7d0,stroke:#22c55e
+
+    style G1 fill:#1e40af,color:#dbeafe,stroke:#3b82f6
+    style G2 fill:#1e40af,color:#dbeafe,stroke:#3b82f6
+    style G3 fill:#1e40af,color:#dbeafe,stroke:#3b82f6
+    style G4 fill:#1e40af,color:#dbeafe,stroke:#3b82f6
+
+    style H1 fill:#4c1d95,color:#ede9fe,stroke:#7c3aed
+    style H2 fill:#5b21b6,color:#ddd6fe,stroke:#8b5cf6
+```
 ---
 
 ## 13. Key Findings
