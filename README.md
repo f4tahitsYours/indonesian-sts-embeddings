@@ -119,110 +119,124 @@ This module provides reusable utilities imported across all pipeline stages:
 
 ## 4. System Architecture
 
-### 4.1 End-to-End ML Pipeline
+---
 
+### 🔄 End-to-End ML Pipeline
 ```mermaid
 flowchart TD
-    A["English STSB Dataset\nstsb_multi_mt"]
-    -->|Helsinki-NLP/opus-mt-en-id| B["Machine Translation\nEN → ID"]
+    A([📦 English STS-B Dataset\nstsb_multi_mt])
+    B[🌐 Machine Translation\nHelsinki-NLP/opus-mt-en-id\nEN → ID]
+    C[🧹 Dataset Preprocessing\nCleaning · Deduplication · Splitting]
 
-    B --> C["Dataset Preprocessing\nCleaning · Dedup · Split"]
+    D[(🗂️ train_pairs.csv\n5,696 pairs)]
+    E[(🗂️ val_pairs.csv\n2,994 pairs)]
+    F[(🗂️ test_pairs.csv\n1,372 pairs)]
 
-    C --> D[("train_pairs.csv\n5,696 pairs")]
-    C --> E[("val_pairs.csv\n2,994 pairs")]
-    C --> F[("test_pairs.csv\n1,372 pairs")]
+    G["⚡ Stage 3 — Zero-Shot Baseline\nIndoBERT + Mean Pooling\n📊 Spearman = 0.4653"]
+    H["🔁 Stage 4 — SimCSE Training\nDropout Augmentation\n📊 Spearman = 0.5885  (+0.1232)"]
+    I["⛏️ Stage 5 — BM25 Hard Negative Mining\n2,968 Hard Negative Triplets"]
+    J["🎯 Stage 6 — SBERT Fine-Tuning\nCosineSimilarityLoss · 4 Epochs\n📊 Spearman = 0.7091  (+0.2438)"]
 
-    D --> G["Stage 3 · Zero-Shot Baseline\nIndoBERT + Mean Pooling\nSpearman = 0.4653"]
-    D --> H["Stage 4 · SimCSE Training\nDropout Augmentation\nSpearman = 0.5885"]
-    D --> I["Stage 5 · BM25 Mining\n2,968 Hard Negative Triplets"]
+    K["📐 Stage 7 — Final Evaluation\nt-SNE · Nearest Neighbour · Error Analysis"]
+    L["🖥️ Stage 8 — Gradio Demo\nSemantic Search Interface"]
 
-    I --> J["Stage 6 · SBERT Fine-Tuning\nCosineSimilarityLoss\nSpearman = 0.7091"]
+    A -->|Helsinki-NLP/opus-mt-en-id| B
+    B --> C
+    C --> D & E & F
 
-    G --> K["Stage 7 · Final Evaluation"]
+    D --> G
+    D --> H
+    D --> I
+    I --> J
+
+    G --> K
     H --> K
     J --> K
+    K --> L
 
-    K --> L["t-SNE · NN Analysis\nError Analysis · Report"]
-    L --> M["Stage 8 · Gradio Demo\nSemantic Search"]
-
-    style G fill:#FFEBE8,stroke:#CC4B37,color:#7A1F0D
-    style H fill:#FFF4E0,stroke:#CC8800,color:#7A4E00
-    style J fill:#E8F5E9,stroke:#2E7D32,color:#1B5E20
-    style K fill:#E3F0FF,stroke:#1565C0,color:#0D3060
+    style A fill:#1e293b,color:#f8fafc,stroke:#334155
+    style B fill:#0f172a,color:#7dd3fc,stroke:#0369a1
+    style C fill:#0f172a,color:#7dd3fc,stroke:#0369a1
+    style D fill:#172554,color:#bfdbfe,stroke:#1d4ed8
+    style E fill:#172554,color:#bfdbfe,stroke:#1d4ed8
+    style F fill:#172554,color:#bfdbfe,stroke:#1d4ed8
+    style G fill:#450a0a,color:#fca5a5,stroke:#b91c1c
+    style H fill:#431407,color:#fdba74,stroke:#c2410c
+    style I fill:#1c1917,color:#d6d3d1,stroke:#57534e
+    style J fill:#052e16,color:#86efac,stroke:#16a34a
+    style K fill:#1e3a5f,color:#93c5fd,stroke:#2563eb
+    style L fill:#2e1065,color:#c4b5fd,stroke:#7c3aed
 ```
 
 ---
 
-### 4.2 Sentence Embedding Architecture
-
+### 🧠 Sentence Embedding Architecture
 ```mermaid
 flowchart LR
-    subgraph Input["Input"]
-        S1[Sentence 1]
-        S2[Sentence 2]
+    subgraph INPUT["  📥 Input  "]
+        S1["🔤 Sentence 1"]
+        S2["🔤 Sentence 2"]
     end
 
-    subgraph Encoder["IndoBERT Encoder — shared weights"]
-        T1["Tokenizer\nmax_len = 128"]
-        B1["BERT Layers\n12 × Transformer"]
-        P1["Mean Pooling\nover token embeddings"]
-        N1["L2 Normalization"]
+    subgraph ENCODER["  🤖 IndoBERT Encoder  (shared weights)  "]
+        T1["🔡 Tokenizer\nmax_len = 128"]
+        B1["🔲 BERT Layers\n12 × Transformer Block"]
+        P1["📊 Mean Pooling\nover token embeddings"]
+        N1["📐 L2 Normalization"]
     end
 
-    subgraph Output["Output"]
-        E1["Embedding A\n768-dim"]
-        E2["Embedding B\n768-dim"]
-        CS["Cosine Similarity\n→ score 0 – 1"]
+    subgraph OUTPUT["  📤 Output  "]
+        E1["📦 Embedding A\n768-dim"]
+        E2["📦 Embedding B\n768-dim"]
+        CS["🎯 Cosine Similarity\n→ score ∈ [0, 1]"]
     end
 
     S1 --> T1 --> B1 --> P1 --> N1 --> E1
     S2 --> T1
     E1 --> CS
     E2 --> CS
+    N1 --> E2
+
+    style INPUT fill:#0f172a,color:#e2e8f0,stroke:#334155
+    style ENCODER fill:#1e1b4b,color:#e0e7ff,stroke:#4338ca
+    style OUTPUT fill:#052e16,color:#dcfce7,stroke:#16a34a
 ```
 
 ---
 
-### 4.3 Training Strategy Comparison
-
-| | Stage 3 · Baseline | Stage 4 · SimCSE | Stage 6 · SBERT + HN |
-|---|---|---|---|
-| **Method** | Frozen weights, no loss | Dropout augmentation | Labeled pairs + hard negatives |
-| **Loss Function** | — | MultipleNegativesRankingLoss | CosineSimilarityLoss |
-| **Spearman ρ** | 0.4653 | 0.5885 | **0.7091** |
-| **Δ vs Baseline** | — | +0.1232 | **+0.2438** |
-
+### 📊 Training Strategy Comparison
 ```mermaid
 flowchart LR
-    subgraph BL["Stage 3 · Baseline"]
+    subgraph BL["  ⚡ Stage 3 — Baseline  "]
         direction TB
-        b1["IndoBERT weights frozen"]
-        b2["No loss function"]
-        b3["Spearman: 0.4653"]
+        b1["🔒 IndoBERT weights\nfrozen / untouched"]
+        b2["❌ No loss function\nNo fine-tuning"]
+        b3["📊 Spearman: 0.4653\n(reference point)"]
         b1 --> b2 --> b3
     end
 
-    subgraph SC["Stage 4 · SimCSE"]
+    subgraph SC["  🔁 Stage 4 — SimCSE  "]
         direction TB
-        s1["Same sentence × 2 dropout masks"]
-        s2["MultipleNegativesRankingLoss"]
-        s3["Spearman: 0.5885 ↑ +0.1232"]
+        s1["✏️ Same sentence × 2\nDifferent dropout masks"]
+        s2["📉 MultipleNegativesRankingLoss\nIn-batch negatives"]
+        s3["📊 Spearman: 0.5885\n▲ +0.1232 vs baseline"]
         s1 --> s2 --> s3
     end
 
-    subgraph SB["Stage 6 · SBERT + HN"]
+    subgraph SB["  🎯 Stage 6 — SBERT + Hard Negatives  "]
         direction TB
-        k1["Labeled pairs + BM25 hard negatives"]
-        k2["CosineSimilarityLoss · 4 epochs"]
-        k3["Spearman: 0.7091 ↑ +0.2438"]
+        k1["📂 Labeled pairs\n+ BM25 hard negatives"]
+        k2["📉 CosineSimilarityLoss\nPhase 1: 4 epochs"]
+        k3["📊 Spearman: 0.7091\n▲ +0.2438 vs baseline"]
         k1 --> k2 --> k3
     end
 
-    BL --> SC --> SB
+    BL -->|"+0.1232"| SC
+    SC -->|"+0.1206"| SB
 
-    style BL fill:#FFEBE8,stroke:#CC4B37,color:#7A1F0D
-    style SC fill:#FFF4E0,stroke:#CC8800,color:#7A4E00
-    style SB fill:#E8F5E9,stroke:#2E7D32,color:#1B5E20
+    style BL fill:#450a0a,color:#fecaca,stroke:#dc2626
+    style SC fill:#431407,color:#fed7aa,stroke:#ea580c
+    style SB fill:#052e16,color:#bbf7d0,stroke:#16a34a
 ```
 
 ---
