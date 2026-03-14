@@ -40,7 +40,7 @@ Coba model secara interaktif melalui aplikasi web yang telah di-deploy:
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://f4tahitsyours-indonesian-sts-embeddings-app.streamlit.app)
 
-**URL:** https://f4tahitsyours-indonesian-sts-embeddings-app.streamlit.app
+**URL:** https://f4tahitsyours-indonesian-sts-embedding.streamlit.app
 
 ### Fitur Demo
 | Halaman | Deskripsi |
